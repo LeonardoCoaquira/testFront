@@ -114,7 +114,13 @@
   <br>
   <section>
     <div>
-      {{image}}
+        <% if (imageData) { %>
+            <div>
+              <img src="data:image/png;base64,<%= imageData %>" alt="Imagen" style="max-width: 100%; height: auto;">
+            </div>
+          <% } else { %>
+            <p></p> <!-- Puedes añadir algún mensaje de error aquí si lo deseas -->
+          <% } %>          
     </div>
   </section>
 

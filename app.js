@@ -21,25 +21,31 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.render('index');
+  res.render('index', { imageData: null }); // Pasa imageData como nulo inicialmente
 });
 
 app.post('/upload', upload.single('file'), (req, res) => {
   const file = req.file;
   if (!file) {
-    return res.status(400).send('No se ha seleccionado ningún archivo');
+    return res.status(400).render('index', { error: 'No se ha seleccionado ningún archivo', imageData: null });
   }
 
-  // Procesar el archivo CSV y generar la imagen
-  const csvData = fs.readFileSync(file.path, 'utf8');
-  const data = processCSVData(csvData);
-  const image = generateImage(data);
+  try {
+    // Procesar el archivo CSV y generar la imagen
+    const csvData = fs.readFileSync(file.path, 'utf8');
+    const data = processCSVData(csvData);
+    const image = generateImage(data);
 
-  // Eliminar el archivo CSV temporal
-  fs.unlinkSync(file.path);
+    // Eliminar el archivo CSV temporal
+    fs.unlinkSync(file.path);
 
-  // Enviar la imagen como respuesta
-  res.send(image);
+    // Renderizar la vista con la imagen
+    
+    res.render('index', { imageData: image });
+  } catch (error) {
+    console.error(error);
+    res.render('index', { error: 'Error al procesar el archivo CSV', imageData: null });
+  }
 });
 
 app.listen(port, () => {
