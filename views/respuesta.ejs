@@ -1,0 +1,6 @@
+<% if (response) { %>
+    <div>
+      <img src="data:image/png;base64,<%= Buffer.from(response).toString('base64') %>" alt="Imagen" style="max-width: 100%; height: auto;">
+    </div>
+  <% } %>
+  
